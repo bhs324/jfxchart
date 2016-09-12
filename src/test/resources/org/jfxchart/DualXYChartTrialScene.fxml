@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox prefHeight="496.0" prefWidth="493.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jfxchart.DualXYChartTrialSceneController">
+   <children>
+      <AnchorPane fx:id="chartArea" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+      <HBox spacing="5.0" VBox.vgrow="NEVER">
+         <children>
+            <Button mnemonicParsing="false" onAction="#generateValue" text="Populate Value" />
+            <ToggleButton fx:id="primaryToggle" mnemonicParsing="false" selected="true" text="Primary Chart" />
+            <ToggleButton fx:id="secondaryToggle" mnemonicParsing="false" selected="true" text="Secondary Chart" />
+         </children>
+      </HBox>
+   </children>
+</VBox>
