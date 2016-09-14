@@ -8,6 +8,92 @@ and open the template in the editor.
     Author     : bhs
 */
 
+* {
+    SECONDARY_CHART_COLOR_1: #FF0000;
+	SECONDARY_CHART_COLOR_2: #FF8000;
+    SECONDARY_CHART_COLOR_3: #FFFF00;
+    SECONDARY_CHART_COLOR_4: #00FF00;
+    SECONDARY_CHART_COLOR_5: #00FFFF;
+	SECONDARY_CHART_COLOR_6: #0040FF;
+    SECONDARY_CHART_COLOR_7: #0000FF;
+    SECONDARY_CHART_COLOR_8: #8000FF;
+	/* 20% opacity */
+    SECONDARY_CHART_COLOR_1_TRANS_20: #FF000033;
+    SECONDARY_CHART_COLOR_2_TRANS_20: #FF800033;
+    SECONDARY_CHART_COLOR_3_TRANS_20: #FFFF0033;
+    SECONDARY_CHART_COLOR_4_TRANS_20: #00FF0033;
+    SECONDARY_CHART_COLOR_5_TRANS_20: #00FFFF33;
+	SECONDARY_CHART_COLOR_6_TRANS_20: #0040FF33;
+    SECONDARY_CHART_COLOR_7_TRANS_20: #0000FF33;
+    SECONDARY_CHART_COLOR_8_TRANS_20: #8000FF33;
+    /* 70% opacity */
+    SECONDARY_CHART_COLOR_1_TRANS_70: #FF0000b3;
+    SECONDARY_CHART_COLOR_2_TRANS_70: #FFD606b3;
+    SECONDARY_CHART_COLOR_3_TRANS_70: #FFFF00b3;
+    SECONDARY_CHART_COLOR_4_TRANS_70: #00FF00b3;
+    SECONDARY_CHART_COLOR_5_TRANS_70: #00FFFFb3;
+	SECONDARY_CHART_COLOR_6_TRANS_70: #0040FFb3;
+    SECONDARY_CHART_COLOR_7_TRANS_70: #0000FFb3;
+    SECONDARY_CHART_COLOR_8_TRANS_70: #8000FFb3;
+}
+
+.chart-content {
+	-fx-padding: 0 0 40px 0;
+}
+
 .chart-plot-background {
     -fx-background-color: transparent;
 }
+
+.primary-chart .chart-legend {
+	-fx-translate-y: -30px;
+}
+
+.secondary-chart .default-color0.chart-area-symbol { -fx-background-color: SECONDARY_CHART_COLOR_1, white; }
+.secondary-chart .default-color1.chart-area-symbol { -fx-background-color: SECONDARY_CHART_COLOR_2, white; }
+.secondary-chart .default-color2.chart-area-symbol { -fx-background-color: SECONDARY_CHART_COLOR_3, white; }
+.secondary-chart .default-color3.chart-area-symbol { -fx-background-color: SECONDARY_CHART_COLOR_4, white; }
+.secondary-chart .default-color4.chart-area-symbol { -fx-background-color: SECONDARY_CHART_COLOR_5, white; }
+.secondary-chart .default-color5.chart-area-symbol { -fx-background-color: SECONDARY_CHART_COLOR_6, white; }
+.secondary-chart .default-color6.chart-area-symbol { -fx-background-color: SECONDARY_CHART_COLOR_7, white; }
+.secondary-chart .default-color7.chart-area-symbol { -fx-background-color: SECONDARY_CHART_COLOR_8, white; }
+.secondary-chart .default-color0.chart-series-area-line { -fx-stroke: SECONDARY_CHART_COLOR_1; }
+.secondary-chart .default-color1.chart-series-area-line { -fx-stroke: SECONDARY_CHART_COLOR_2; }
+.secondary-chart .default-color2.chart-series-area-line { -fx-stroke: SECONDARY_CHART_COLOR_3; }
+.secondary-chart .default-color3.chart-series-area-line { -fx-stroke: SECONDARY_CHART_COLOR_4; }
+.secondary-chart .default-color4.chart-series-area-line { -fx-stroke: SECONDARY_CHART_COLOR_5; }
+.secondary-chart .default-color5.chart-series-area-line { -fx-stroke: SECONDARY_CHART_COLOR_6; }
+.secondary-chart .default-color6.chart-series-area-line { -fx-stroke: SECONDARY_CHART_COLOR_7; }
+.secondary-chart .default-color7.chart-series-area-line { -fx-stroke: SECONDARY_CHART_COLOR_8; }
+.secondary-chart .default-color0.chart-series-area-fill { -fx-fill: SECONDARY_CHART_COLOR_1_TRANS_20; }
+.secondary-chart .default-color1.chart-series-area-fill { -fx-fill: SECONDARY_CHART_COLOR_2_TRANS_20; }
+.secondary-chart .default-color2.chart-series-area-fill { -fx-fill: SECONDARY_CHART_COLOR_3_TRANS_20; }
+.secondary-chart .default-color3.chart-series-area-fill { -fx-fill: SECONDARY_CHART_COLOR_4_TRANS_20; }
+.secondary-chart .default-color4.chart-series-area-fill { -fx-fill: SECONDARY_CHART_COLOR_5_TRANS_20; }
+.secondary-chart .default-color5.chart-series-area-fill { -fx-fill: SECONDARY_CHART_COLOR_6_TRANS_20; }
+.secondary-chart .default-color6.chart-series-area-fill { -fx-fill: SECONDARY_CHART_COLOR_7_TRANS_20; }
+.secondary-chart .default-color7.chart-series-area-fill { -fx-fill: SECONDARY_CHART_COLOR_8_TRANS_20; }
+.secondary-chart .default-color0.chart-line-symbol { -fx-background-color: SECONDARY_CHART_COLOR_1, white; }
+.secondary-chart .default-color1.chart-line-symbol { -fx-background-color: SECONDARY_CHART_COLOR_2, white; }
+.secondary-chart .default-color2.chart-line-symbol { -fx-background-color: SECONDARY_CHART_COLOR_3, white; }
+.secondary-chart .default-color3.chart-line-symbol { -fx-background-color: SECONDARY_CHART_COLOR_4, white; }
+.secondary-chart .default-color4.chart-line-symbol { -fx-background-color: SECONDARY_CHART_COLOR_5, white; }
+.secondary-chart .default-color5.chart-line-symbol { -fx-background-color: SECONDARY_CHART_COLOR_6, white; }
+.secondary-chart .default-color6.chart-line-symbol { -fx-background-color: SECONDARY_CHART_COLOR_7, white; }
+.secondary-chart .default-color7.chart-line-symbol { -fx-background-color: SECONDARY_CHART_COLOR_8, white; }
+.secondary-chart .default-color0.chart-series-line { -fx-stroke: SECONDARY_CHART_COLOR_1; }
+.secondary-chart .default-color1.chart-series-line { -fx-stroke: SECONDARY_CHART_COLOR_2; }
+.secondary-chart .default-color2.chart-series-line { -fx-stroke: SECONDARY_CHART_COLOR_3; }
+.secondary-chart .default-color3.chart-series-line { -fx-stroke: SECONDARY_CHART_COLOR_4; }
+.secondary-chart .default-color4.chart-series-line { -fx-stroke: SECONDARY_CHART_COLOR_5; }
+.secondary-chart .default-color5.chart-series-line { -fx-stroke: SECONDARY_CHART_COLOR_6; }
+.secondary-chart .default-color6.chart-series-line { -fx-stroke: SECONDARY_CHART_COLOR_7; }
+.secondary-chart .default-color7.chart-series-line { -fx-stroke: SECONDARY_CHART_COLOR_8; }
+.secondary-chart .default-color0.chart-bar { -fx-bar-fill: SECONDARY_CHART_COLOR_1; }
+.secondary-chart .default-color1.chart-bar { -fx-bar-fill: SECONDARY_CHART_COLOR_2; }
+.secondary-chart .default-color2.chart-bar { -fx-bar-fill: SECONDARY_CHART_COLOR_3; }
+.secondary-chart .default-color3.chart-bar { -fx-bar-fill: SECONDARY_CHART_COLOR_4; }
+.secondary-chart .default-color4.chart-bar { -fx-bar-fill: SECONDARY_CHART_COLOR_5; }
+.secondary-chart .default-color5.chart-bar { -fx-bar-fill: SECONDARY_CHART_COLOR_6; }
+.secondary-chart .default-color6.chart-bar { -fx-bar-fill: SECONDARY_CHART_COLOR_7; }
+.secondary-chart .default-color7.chart-bar { -fx-bar-fill: SECONDARY_CHART_COLOR_8; }

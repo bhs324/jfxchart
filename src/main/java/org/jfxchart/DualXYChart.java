@@ -5,6 +5,7 @@
  */
 package org.jfxchart;
 
+import com.sun.javafx.charts.Legend;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ModifiableObservableListBase;
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,13 +34,15 @@ import java.util.stream.Collectors;
  * @param <Y2>
  * @author bhs
  */
-// TODO: legend 위치, 시리즈 색상 통합, 시리즈에 누락된 값 있어도 차트 모양 안깨지도록.
+// TODO: 시리즈 값을 차트 그린후에 추가해도 모양 안 깨지도록. 시리즈에 누락된 값 있어도 차트 모양 안 깨지도록.
 public class DualXYChart<X, Y1 extends Number, Y2 extends Number> extends StackPane {
 
     public static final Logger logger = LoggerFactory.getLogger(DualXYChart.class);
 
     private XYChart<X, Y1> primaryChart;
     private XYChart<X, Y2> secondaryChart;
+    private Comparator<Data> primaryDataComparator = (o1, o2) -> o1.getXValue().toString().compareTo(o2.getXValue().toString());
+    private Comparator<Data> secondaryDataComparator = (o1, o2) -> o1.getXValue().toString().compareTo(o2.getXValue().toString());
 
     public DualXYChart(Axis<X> xAxis, Axis<Y1> yAxis1, Axis<Y2> yAxis2,
                        Class<? extends XYChart<X, Y1>> primaryClass, Class<? extends XYChart<X, Y2>> secondaryClass) {
@@ -47,10 +51,9 @@ public class DualXYChart<X, Y1 extends Number, Y2 extends Number> extends StackP
         try {
             Constructor<? extends XYChart<X, Y1>> primaryCon = primaryClass.getConstructor(Axis.class, Axis.class);
             Constructor<? extends XYChart<X, Y2>> secondaryCon = secondaryClass.getConstructor(Axis.class, Axis.class);
+
             setPrimaryChart(primaryCon.newInstance(xAxis, yAxis1));
             setSecondaryChart(secondaryCon.newInstance(xAxis, yAxis2));
-
-            resizeChart();
 
             super.getChildren().addAll(getPrimaryChart(), getSecondaryChart());
         } catch (NoSuchMethodException | SecurityException ex) {
@@ -72,6 +75,7 @@ public class DualXYChart<X, Y1 extends Number, Y2 extends Number> extends StackP
 
     public final void setPrimaryChart(XYChart<X, Y1> chart) {
         primaryChart = chart;
+        resizePrimaryChart();
     }
 
     public final XYChart<X, Y2> getSecondaryChart() {
@@ -80,14 +84,31 @@ public class DualXYChart<X, Y1 extends Number, Y2 extends Number> extends StackP
 
     public final void setSecondaryChart(XYChart<X, Y2> chart) {
         secondaryChart = chart;
+        resizeSecondaryChart();
     }
 
     public final ObservableList<XYChart.Series<X, Y1>> getPrimaryData() {
-        return new XAxisCheckedSeriesList(new NullCheckedSeriesList(primaryChart.getData()), secondaryChart.getData());
+        return new XAxisCheckedSeriesList(new NullCheckedSeriesList(primaryChart.getData()), secondaryChart.getData(), primaryDataComparator);
     }
 
     public final ObservableList<XYChart.Series<X, Y2>> getSecondaryData() {
-        return new XAxisCheckedSeriesList(new NullCheckedSeriesList(secondaryChart.getData()), primaryChart.getData());
+        return new XAxisCheckedSeriesList(new NullCheckedSeriesList(secondaryChart.getData()), primaryChart.getData(), secondaryDataComparator);
+    }
+
+    public Comparator<Data> getPrimaryDataComparator() {
+        return primaryDataComparator;
+    }
+
+    public void setPrimaryDataComparator(Comparator<Data> primaryDataComparator) {
+        this.primaryDataComparator = primaryDataComparator;
+    }
+
+    public Comparator<Data> getSecondaryDataComparator() {
+        return secondaryDataComparator;
+    }
+
+    public void setSecondaryDataComparator(Comparator<Data> secondaryDataComparator) {
+        this.secondaryDataComparator = secondaryDataComparator;
     }
 
     private static class XAxisCheckedSeriesList<X, Y extends Number> extends ModifiableObservableListBase<Series<X, Y>> {
@@ -95,9 +116,11 @@ public class DualXYChart<X, Y1 extends Number, Y2 extends Number> extends StackP
         private final ObservableList<XYChart.Series<X, Y>> mySeriesList;
         private final ObservableList<XYChart.Series<X, Y>> otherSeriesList;
 
-        public XAxisCheckedSeriesList(ObservableList<XYChart.Series<X, Y>> myList, ObservableList<XYChart.Series<X, Y>> otherList) {
+        public XAxisCheckedSeriesList(ObservableList<XYChart.Series<X, Y>> myList, ObservableList<XYChart.Series<X, Y>> otherList,
+                                      Comparator<Data<X, Y>> dataComparator) {
             mySeriesList = myList;
             otherSeriesList = otherList;
+
             mySeriesList.addListener((ListChangeListener.Change<? extends Series<X, Y>> c) -> {
                 // TODO 코드정리
                 if (c.next()) {
@@ -107,8 +130,7 @@ public class DualXYChart<X, Y1 extends Number, Y2 extends Number> extends StackP
                             for (Series<X, Y> otherSeries : otherSeriesList) {
                                 if (!otherSeries.getData().stream().map(Data::getXValue).collect(Collectors.toList()).contains(addedX)) {
                                     otherSeries.getData().add(new Data<>(addedX, null));
-                                    // TODO 정렬순서 설정 가능하도록
-                                    otherSeries.getData().sort((o1, o2) -> o1.getXValue().toString().compareTo(o2.getXValue().toString()));
+                                    otherSeries.getData().sort(dataComparator);
                                     JFXCharts.checkNullData(otherSeries);
                                 }
                             }
@@ -120,8 +142,7 @@ public class DualXYChart<X, Y1 extends Number, Y2 extends Number> extends StackP
                             for (Series<X, Y> mySeries2 : c.getAddedSubList()) {
                                 if (!mySeries2.getData().stream().map(Data::getXValue).collect(Collectors.toList()).contains(otherX)) {
                                     mySeries2.getData().add(new Data<>(otherX, null));
-                                    // TODO 정렬순서 설정 가능하도록
-                                    mySeries2.getData().sort((o1, o2) -> o1.getXValue().toString().compareTo(o2.getXValue().toString()));
+                                    mySeries2.getData().sort(dataComparator);
                                     JFXCharts.checkNullData(mySeries2);
                                 }
                             }
@@ -202,22 +223,29 @@ public class DualXYChart<X, Y1 extends Number, Y2 extends Number> extends StackP
 
     private static final double Y_AXIS_WIDTH = 30;
 
-    private void resizeChart() {
+    private void resizePrimaryChart() {
         primaryChart.getYAxis().setSide(Side.LEFT);
         primaryChart.getYAxis().setMinWidth(Y_AXIS_WIDTH);
         primaryChart.getYAxis().setPrefWidth(Y_AXIS_WIDTH);
         primaryChart.getYAxis().setMaxWidth(Y_AXIS_WIDTH);
         StackPane.setAlignment(primaryChart, Pos.CENTER_LEFT);
-        primaryChart.getStylesheets().add(this.getClass().getResource(this.getClass().getSimpleName() + ".css").toExternalForm());
+        StackPane.setMargin(primaryChart, new Insets(0, Y_AXIS_WIDTH, 0, 0));
 
+        primaryChart.getStylesheets().add(this.getClass().getResource(this.getClass().getSimpleName() + ".css").toExternalForm());
+        primaryChart.getStyleClass().add("primary-chart");
+        primaryChart.getChildrenUnmodifiable().stream().filter(n -> n instanceof Legend).forEach(n -> n.setStyle("-fx-translate-x: " + Y_AXIS_WIDTH / 2 + ";"));
+    }
+
+    private void resizeSecondaryChart() {
         secondaryChart.getYAxis().setSide(Side.RIGHT);
         secondaryChart.getYAxis().setMinWidth(Y_AXIS_WIDTH);
         secondaryChart.getYAxis().setPrefWidth(Y_AXIS_WIDTH);
         secondaryChart.getYAxis().setMaxWidth(Y_AXIS_WIDTH);
         StackPane.setAlignment(secondaryChart, Pos.CENTER_RIGHT);
-        secondaryChart.getStylesheets().add(this.getClass().getResource(this.getClass().getSimpleName() + ".css").toExternalForm());
-
-        StackPane.setMargin(primaryChart, new Insets(0, Y_AXIS_WIDTH, 0, 0));
         StackPane.setMargin(secondaryChart, new Insets(0, 0, 0, Y_AXIS_WIDTH));
+
+        secondaryChart.getStylesheets().add(this.getClass().getResource(this.getClass().getSimpleName() + ".css").toExternalForm());
+        secondaryChart.getStyleClass().add("secondary-chart");
+        secondaryChart.getChildrenUnmodifiable().stream().filter(n -> n instanceof Legend).forEach(n -> n.setStyle("-fx-translate-x: -" + Y_AXIS_WIDTH / 2 + ";"));
     }
 }
